@@ -1,23 +1,31 @@
-import logo from './logo.svg';
+import { useState, useEffect } from 'react';
 import './App.css';
+import { CHARACTERS_URL } from './api-client.js';
+
+async function getCharacters() {
+  const res = await fetch(CHARACTERS_URL);
+  const json = await res.json();
+  return json.results;
+}
 
 function App() {
+  const [characters, setCharacters] = useState([]);
+
+  useEffect(() => {
+    getCharacters().then((characters) => {
+      console.log(`Characters ${characters}`);
+      setCharacters(characters);
+    });
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <h1>Rick and Morty Characters</h1>
+      <ul>
+        {characters.map((c) => (
+          <li>{c.name}</li>
+        ))}
+      </ul>
     </div>
   );
 }
